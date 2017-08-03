@@ -1,0 +1,46 @@
+<%- model_class = SecretCode -%>
+
+<div class="page-header">
+  <h1>Generate <%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h1>
+</div>
+<%= form_for(:secret_code, url: secret_codes_path,  method: :post,html: {role: 'form' }) do |f| %>
+  <div class="form-group">
+    <%= f.label :number_of_codes %>
+    <%= f.select :code, %w[1 10 20 50 100],{:selected => '10'},{class: 'form-control'} %>
+  </div>
+  <%= f.submit t('.create', default: 'Create'), class: 'btn btn-primary' %>
+<% end %>
+
+
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h1>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:code) %></th>
+      <th><%= model_class.human_attribute_name(:user_id) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @secret_codes.each do |secret_code| %>
+      <tr>
+        <td><%= link_to secret_code.id, secret_code_path(secret_code) %></td>
+        <td><%= secret_code.code %></td>
+        <td><%= secret_code.user.try(:email) %></td>
+        <td><%=l secret_code.created_at %></td>
+        <td>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      secret_code_path(secret_code),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
